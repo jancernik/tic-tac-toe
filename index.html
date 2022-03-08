@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/gh/JnaCer/floating-github-link@main/github-link.js"></script>
+    <title>Tic Tac Toe</title>
+  </head>
+  <body>
+    <div class="initial-screen active">
+      <p class="title">Tic Tac Toe</p>
+      <form>
+        <div>
+          <div class="player">
+            <p class="p1">Player 1</p>
+            <input type="text" id="player1" placeholder="Enter name" maxlength="10"/>
+          </div>
+          <div class="player">
+            <p class="p2">Player 2</p>
+            <input type="text" id="player2" placeholder="Enter name" maxlength="10"/>
+          </div>
+        </div>
+        <div class="marks">
+          <div class="p1-mark">
+            X
+          </div>
+          <button type="button" id="swap-marks">&#8646</button>
+          <div class="p2-mark">
+            O
+          </div>
+        </div>
+        <button type="submit">Start Game</button>
+      </form>
+    </div>
+    <div class="turn"></div>
+    <div class="container"></div>
+    <div class="result">
+      <p class="p1-result"></p>
+      <p class="p2-result"></p>
+    </div>
+    <a href="https://github.com/JnaCer/floating-github-link" class="github-link black-icon" style="z-index: 60"></a>
+    <script src="script.js"></script>
+  </body>
+</html>
