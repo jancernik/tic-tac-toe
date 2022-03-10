@@ -8,7 +8,7 @@
   --gameboard-border-radius: none;
   --tile-border-radius: 0.8rem;
   --gameboard-background-color: white;
-  --tile-background-color: rgba(0, 0, 0, 0.07);
+  --tile-background-color: rgb(237, 237, 237);
   --tile-background-color-hover: rgba(0, 0, 0, 0.12);
 }
 
@@ -179,8 +179,8 @@ button {
   z-index: 30;
 }
 
-.turn,
-.result {
+header,
+footer {
   flex: 1;
   display: flex;
   justify-content: center;
@@ -192,10 +192,17 @@ button {
   align-items: flex-end;
 }
 
-.result {
+header {
+  align-items: flex-start;
+}
+
+footer{
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
+}
+
+.result {
   gap: 0.4rem;
 }
 
