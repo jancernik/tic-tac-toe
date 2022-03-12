@@ -9,7 +9,7 @@
   --tile-border-radius: 0.8rem;
   --gameboard-background-color: white;
   --tile-background-color: rgb(237, 237, 237);
-  --tile-background-color-hover: rgba(0, 0, 0, 0.12);
+  --tile-background-color-hover: rgb(225, 225, 225);
 }
 
 * {
@@ -37,7 +37,7 @@ body {
   gap: 20px;
   z-index: 40;
   pointer-events: all;
-  transform: translateY(-100%);
+  transform: translateY(-110vh);
   transition: all 0.9s cubic-bezier(.77,0,.18,1) 0.4s, scale 0.6s ease-in-out;
   scale: 0.9;
 }
@@ -129,6 +129,7 @@ form > div {
   user-select: none;
   background: var(--tile-background-color);
   font-weight: 900;
+  z-index: 5;
 }
 
 .player {
@@ -193,7 +194,7 @@ footer {
 }
 
 header {
-  align-items: flex-start;
+  align-items: flex-end;
 }
 
 footer{
@@ -204,6 +205,7 @@ footer{
 
 .result {
   gap: 0.4rem;
+  text-align: center;
 }
 
 .p2-result {
@@ -224,7 +226,13 @@ footer{
   border-radius: var(--tile-border-radius);
   user-select: none;
   background: var(--tile-background-color);
+  transition: color 100ms ease-in-out;
 }
+
+.game-tile.restart {
+  color: rgb(237, 237, 237);
+}
+
 .game-tile:empty:hover,
 input:hover,
 input:focus,
@@ -236,11 +244,9 @@ input:focus,
   scale: 1.05;
 }
 
-.gameboard-container.end-board-animation {
+.gameboard-container.end {
   animation: endAnimationGameboard 2s forwards;
 }
-
-
 
 @keyframes endAnimationGameboard {
   0% {
@@ -264,20 +270,20 @@ input:focus,
 }
 
 .turn {
-  transform: translateY(-2rem);
+  transform: translateY(-1.5rem);
 }
 
-.turn.end-board-animation {
+.turn.end {
   animation: endAnimationTurn 0.8s forwards 1.2s;
 }
 
 @keyframes endAnimationTurn {
   0% {
-    transform: translateY(-2rem);
+    transform: translateY(-1.5rem);
   }
 
   100% {
-    transform: translateY(1rem);
+    transform: translateY(1.5rem);
   }
 }
 
@@ -285,7 +291,7 @@ input:focus,
   transform: translateY(-5rem);
 }
 
-.result.end-board-animation {
+.result.end {
   animation: endAnimationResult 0.8s forwards 1.2s;
 }
 
@@ -296,5 +302,111 @@ input:focus,
 
   100% {
     transform: translateY(-2rem);
+  }
+}
+
+.p1-mark.swap {
+  animation: p1Swap 0.8s forwards;
+  z-index: 2;
+}
+
+.p2-mark.swap {
+  animation: p2Swap 0.8s forwards;
+  z-index: 2;
+}
+
+@keyframes p1Swap {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(75px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes p2Swap {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-75px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+#restart,
+#change-names{
+  transition: all 600ms ease-in-out;
+}
+
+#change-names{
+  position: relative;
+  left: 5.15rem;
+  z-index: 5;
+}
+
+#restart{
+  position: relative;
+  left: -5.15rem;
+  z-index: 3;
+}
+
+#restart.active {
+  left: 0;
+}
+
+#change-names.active {
+  left: 0;
+}
+
+.gameboard-container.restart {
+  animation: restartAnimationGameboard 1s forwards;
+}
+
+@keyframes restartAnimationGameboard {
+  0% {
+    scale: 1;
+  }
+
+  80% {
+    scale: 0.95;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+.gameboard-container.restart.end {
+  animation: restartEndAnimationGameboard 2s forwards;
+}
+
+@keyframes restartEndAnimationGameboard {
+  0% {
+    scale: 1;
+    transform: translateY(-3rem);
+  }
+
+  40% {
+    scale: 0.95;
+    transform: translateY(-3rem);
+  }
+
+  60% {
+    scale: 1;
+    transform: translateY(-3rem);
+  }
+
+  100% {
+    transform: translateY(0);
+    scale: 1;
   }
 }

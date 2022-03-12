@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="animations.css" />
     <script src="https://cdn.jsdelivr.net/gh/JnaCer/floating-github-link@main/github-link.js"></script>
     <title>Tic Tac Toe</title>
   </head>
@@ -37,12 +38,18 @@
         <button type="submit">Start Game</button>
       </form>
     </div>
-    <div class="container"></div>
+    <div class="container">
+      <div class="gameboard-container"></div>
+    </div>
     <footer>
       <div class="result">
         <p class="p1-result"></p>
         <p class="p2-result"></p>
       </div>
+      <div class="buttons">
+        <button type="button" id="change-names">Change names</button>
+        <button type="button" id="restart">Restart</button>
+        </div>
     </footer>
     <a href="https://github.com/JnaCer/floating-github-link" class="github-link black-icon" style="z-index: 60"></a>
     <script src="script.js"></script>
