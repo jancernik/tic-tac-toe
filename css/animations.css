@@ -1,3 +1,5 @@
+@import "./variables.css";
+
 .initial-screen {
   transform: translateY(-110%);
   transition: all 0.9s cubic-bezier(.77,0,.18,1) 0.4s, scale 0.6s ease-in-out;

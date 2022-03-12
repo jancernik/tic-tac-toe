@@ -1,0 +1,10 @@
+:root {
+  --gameboard-spacing: 1rem;
+  --tile-size: 6rem;
+  --tile-border: none;
+  --gameboard-border-radius: none;
+  --tile-border-radius: 0.8rem;
+  --gameboard-background-color: white;
+  --tile-background-color: rgb(237, 237, 237);
+  --tile-background-color-hover: rgb(225, 225, 225);
+}
