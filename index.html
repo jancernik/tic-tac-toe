@@ -30,12 +30,14 @@
           <div class="p1-mark">
             X
           </div>
-          <button type="button" id="swap-marks">&#8646</button>
+          <button type="button" id="swap-marks">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+          </button>
           <div class="p2-mark">
             O
           </div>
         </div>
-        <button type="submit">Start Game</button>
+        <button id="start" type="submit">Start Game</button>
       </form>
     </div>
     <div class="container">
@@ -47,7 +49,7 @@
         <p class="p2-result"></p>
       </div>
       <div class="buttons">
-        <button type="button" id="change-names">Change names</button>
+        <button type="button" id="change-names">Go Back</button>
         <button type="button" id="restart">Restart</button>
         </div>
     </footer>

@@ -7,6 +7,7 @@ const DomElement = (() => {
   const p2Result = document.querySelector(".p2-result");
   const turn = document.querySelector(".turn");
   const result = document.querySelector(".result");
+  const buttons = document.querySelector(".buttons");
   const player1Mark = document.querySelector(".p1-mark");
   const player2Mark = document.querySelector(".p2-mark");
   const player1Input = document.getElementById("player1");
@@ -14,6 +15,7 @@ const DomElement = (() => {
   const swapMarksButton = document.getElementById("swap-marks");
   const changeNames = document.getElementById("change-names");
   const restartButton = document.getElementById("restart");
+  const startButton = document.getElementById("start");
 
   for (i = 0; i < 9; i++) {
     const gameTile = document.createElement("div");
@@ -21,7 +23,6 @@ const DomElement = (() => {
     gameTile.setAttribute("data-index", `${i}`);
     gameboardContainer.append(gameTile);
   }
-
   const tiles = document.querySelectorAll(".game-tile");
 
   return {
@@ -40,44 +41,95 @@ const DomElement = (() => {
     swapMarksButton,
     changeNames,
     restartButton,
-    tiles
+    tiles,
+    buttons,
+    startButton,
   };
 })();
 
-const bindEvents = (() => {
+const BindEvents = (() => {
   DomElement.form.addEventListener("submit", (e) => {
     e.preventDefault();
+    DisplayAnimation.removeEnd();
     InitalScreen.hide();
-    game.createPlayers();
-    gameboard.displayTurn();
-    gameboard.displayButton("remove");
-    gameboard.clear();
+    Game.createPlayers();
+    Gameboard.displayTurn();
+    Gameboard.hideRestartButton();
+    Gameboard.clear();
   });
+
   DomElement.swapMarksButton.addEventListener("click", () => {
-    if (!DomElement.player1Mark.classList.contains("swap")){
+    if (!DomElement.player1Mark.classList.contains("swap")) {
       DisplayAnimation.swap();
-      setTimeout(InitalScreen.swapMarks, 400);
+      setTimeout(InitalScreen.swapMarks, 300);
     }
   });
+
   DomElement.gameboardContainer.addEventListener("click", (e) => {
-    if (!DomElement.gameboardContainer.classList.contains("end") &&
+    if (
+      !DomElement.gameboardContainer.classList.contains("end") &&
       e.target.classList.contains("game-tile") &&
-      e.target.innerHTML === "") {
-      if (!game.array.includes("X") && !game.array.includes("O")) gameboard.displayButton("add");
-      gameboard.tileClick(e.target.dataset.index);
+      e.target.innerHTML === ""
+    ) {
+      Gameboard.showRestartButton();
+      Gameboard.tileClick(e.target.dataset.index);
     }
   });
+
   DomElement.changeNames.addEventListener("click", () => {
     InitalScreen.show();
-    game.restart();
+    Game.restart();
   });
+
   DomElement.restartButton.addEventListener("click", () => {
-    setTimeout(gameboard.clear, 1000);
+    setTimeout(Gameboard.clear, 1000);
     setTimeout(DisplayAnimation.tile, 800);
     DisplayAnimation.restart();
-    gameboard.displayButton("remove");
-    game.restart();
+    Gameboard.hideRestartButton();
+    Game.restart();
+    Gameboard.displayTurn();
   });
+})();
+
+const BindKeyboard = (() => {
+  window.onkeydown = function (e) {
+    if (e.keyCode == 32 && InitalScreen.isActive()) {
+      DomElement.swapMarksButton.classList.add("click");
+        DomElement.swapMarksButton.click();
+        setTimeout(function() {DomElement.swapMarksButton.classList.remove("click");}, 600)
+    }
+    if (e.keyCode == 13 && InitalScreen.isActive()) {
+      DomElement.startButton.classList.add("click");
+        DomElement.startButton.click();
+    } 
+    if (e.keyCode == 13 && !InitalScreen.isActive() && Game.isNotEmpty()){
+      DomElement.restartButton.classList.add("click");
+      DomElement.restartButton.click();
+    }
+    if (e.keyCode == 8 && !InitalScreen.isActive()) {
+      DomElement.changeNames.classList.add("click");
+        DomElement.changeNames.click();
+    }
+    if (e.keyCode == 82 && !InitalScreen.isActive() && Game.isNotEmpty()) {
+      DomElement.restartButton.classList.add("click");
+        DomElement.restartButton.click();
+    }
+    if (e.code.includes("Numpad") && !InitalScreen.isActive() && !DomElement.gameboardContainer.classList.contains("end")){
+      const index = [6, 7, 8, 3, 4, 5, 0, 1, 2][e.code.slice(-1) - 1];
+      currentTile = document.querySelector(`[data-index~="${index}"]`);
+      if (currentTile.innerHTML === "") {
+        currentTile.classList.add("click");
+        Gameboard.showRestartButton();
+        Gameboard.tileClick(index);
+        setTimeout(function() {currentTile.classList.remove("click");}, 150);
+      }
+    }
+  };
+  window.onkeyup = function (e) {
+    DomElement.startButton.classList.remove("click");
+    DomElement.changeNames.classList.remove("click");
+    DomElement.restartButton.classList.remove("click");
+  };
 })();
 
 const InitalScreen = (() => {
@@ -93,77 +145,84 @@ const InitalScreen = (() => {
 
   const show = () => {
     DomElement.screen.classList.add("active");
-    DomElement.player1Input.value = value = "";
-    DomElement.player2Input.value = value = "";
+    DomElement.player1Input.value = "";
+    DomElement.player2Input.value = "";
   };
 
   const hide = () => {
     DomElement.screen.classList.remove("active");
   };
 
+  const isActive = () => {
+    return DomElement.screen.classList.contains("active");
+  }
+
   return {
     swapMarks,
     show,
-    hide
+    hide,
+    isActive
   };
 })();
 
-const gameboard = (() => {
+const Gameboard = (() => {
   const tileClick = (index) => {
     _update(index);
-    game.updateArray(index);
-    if (game.checkWin()) _displayWin();
-    else if (game.checkTie()) _displayTie();
-    game.changeCurrentPlayer();
+    Game.updateArray(index);
+    if (Game.checkWin()) _displayWin();
+    else if (Game.checkTie()) _displayTie();
+    Game.changeCurrentPlayer();
     displayTurn();
   };
 
   const _update = (index) => {
-    const currentTile = document.querySelector(`[data-index~="${index}"]`);
-    currentTile.textContent = `${game.currentPlayer.mark}`;
+    document.querySelector(`[data-index~="${index}"]`).textContent = `${Game.currentPlayer.mark}`;
   };
 
   const displayTurn = () => {
-    DomElement.turn.textContent = `Is ${game.currentPlayer.name} turn`;
+    DomElement.turn.textContent = `It's ${Game.currentPlayer.name}'s turn`;
   };
 
   const _displayWin = () => {
-    DomElement.p1Result.textContent = `${game.currentPlayer.name} is the winner!`;
-    DomElement.p2Result.textContent = game.winMessage[Math.floor(Math.random()*game.winMessage.length)];
+    DomElement.p1Result.textContent = `${Game.currentPlayer.name} is the winner!`;
+    DomElement.p2Result.textContent =
+      Game.winMessages[Math.floor(Math.random() * Game.winMessages.length)];
     DisplayAnimation.end();
   };
 
   const _displayTie = () => {
     DomElement.p1Result.textContent = `It's a tie!`;
-    DomElement.p2Result.textContent = game.tieMessage[Math.floor(Math.random()*game.tieMessage.length)];
+    DomElement.p2Result.textContent =
+      Game.tieMessages[Math.floor(Math.random() * Game.tieMessages.length)];
     DisplayAnimation.end();
   };
 
-  const displayButton = (action) => {
-    if (action === "add") {
-      DomElement.restartButton.classList.add("active");
-      DomElement.changeNames.classList.add("active");
-    } else {
-      DomElement.restartButton.classList.remove("active");
-      DomElement.changeNames.classList.remove("active");
-    }
-  }
+  const showRestartButton = () => {
+    DomElement.restartButton.classList.add("active");
+    DomElement.changeNames.classList.add("active");
+  };
+
+  const hideRestartButton = () => {
+    DomElement.restartButton.classList.remove("active");
+    DomElement.changeNames.classList.remove("active");
+  };
 
   const clear = () => {
-    DomElement.tiles.forEach(tile => {
+    DomElement.tiles.forEach((tile) => {
       tile.textContent = "";
     });
-  }
+  };
 
   return {
     tileClick,
     displayTurn,
     clear,
-    displayButton
+    showRestartButton,
+    hideRestartButton,
   };
 })();
 
-const game = (() => {
+const Game = (() => {
   let array = [".", ".", ".", ".", ".", ".", ".", ".", "."];
   let currentPlayer;
   const winningCombinations = [
@@ -176,8 +235,18 @@ const game = (() => {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  const winMessage = ["Congrats!", "I always known you were the best", "What? Can someone win this game?", "Enjoy this imaginary price"]
-  const tieMessage = ["Ready for another round?", "Rematch?", "What a bummer...", "The true tic-tac-toe experience"]
+  const winMessages = [
+    "Congrats!",
+    "I always known you were the best",
+    "What? Can someone win this game?",
+    "Enjoy this imaginary price",
+  ];
+  const tieMessages = [
+    "Ready for another round?",
+    "Rematch?",
+    "What a bummer...",
+    "The true tic-tac-toe experience",
+  ];
 
   const createPlayers = () => {
     player1Name = DomElement.player1Input.value;
@@ -213,50 +282,62 @@ const game = (() => {
   const restart = () => {
     array = [".", ".", ".", ".", ".", ".", ".", ".", "."];
     currentPlayer = player1;
-  }
+  };
+
+  const isNotEmpty = () => {
+  return (Game.array.includes("X") || Game.array.includes("O"))
+  };
 
   return {
     array,
-    winMessage,
-    tieMessage,
+    winMessages,
+    tieMessages,
     updateArray,
     createPlayers,
     checkWin,
     checkTie,
     changeCurrentPlayer,
     restart,
+    isNotEmpty,
     get currentPlayer() {
       return currentPlayer;
     },
     get array() {
       return array;
-    }
+    },
   };
 })();
 
 const DisplayAnimation = (() => {
+  const elementsArray = [
+    DomElement.gameboardContainer,
+    DomElement.turn,
+    DomElement.result,
+    DomElement.turn,
+    DomElement.buttons,
+  ];
   const end = () => {
-    [DomElement.gameboardContainer, DomElement.turn, DomElement.result].forEach((item) => {
+    elementsArray.forEach((item) => {
       item.classList.add("end");
     });
   };
 
-  const _removeEnd = () => {
-    [DomElement.gameboardContainer, DomElement.turn, DomElement.result].forEach((item) => {
+  const removeEnd = () => {
+    elementsArray.forEach((item) => {
       item.classList.remove("end");
     });
-  }
-
-  const restart = () => {
-    [DomElement.gameboardContainer, DomElement.turn, DomElement.result].forEach((item) => {
-      item.classList.add("restart");
-    });
-    setTimeout(_removeRestart, 1000);
-    setTimeout(_removeEnd, 2000);
   };
 
-  const _removeRestart = () => {
-    [DomElement.gameboardContainer, DomElement.turn, DomElement.result].forEach((item) => {
+  const restart = () => {
+    elementsArray.forEach((item) => {
+      item.classList.add("restart");
+    });
+    setTimeout(removeRestart, 2000);
+    setTimeout(removeEnd, 2000);
+  };
+
+  const removeRestart = () => {
+    elementsArray.forEach((item) => {
       item.classList.remove("restart");
     });
   };
@@ -277,7 +358,7 @@ const DisplayAnimation = (() => {
       item.classList.add("restart");
     });
     setTimeout(_removeTile, 200);
-  }
+  };
 
   const _removeTile = () => {
     DomElement.tiles.forEach((item) => {
@@ -289,11 +370,13 @@ const DisplayAnimation = (() => {
     restart,
     end,
     swap,
-    tile
+    tile,
+    removeEnd,
+    restart,
   };
 })();
 
-function Player (name, mark) {
+function Player(name, mark) {
   this.name = name;
   this.mark = mark;
 }

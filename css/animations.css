@@ -1,4 +1,8 @@
-@import "./variables.css";
+@import "./style.css";
+
+:root {
+  --swap-offset: calc(var(--tile-size) / 3)
+}
 
 .initial-screen {
   transform: translateY(-110%);
@@ -18,23 +22,25 @@
 
 #restart,
 #change-names{
-  transition: all 600ms ease-in-out;
+  transition: left 600ms ease-in-out,  opacity 600ms ease-in-out;;
 }
 
 #change-names{
   position: relative;
-  left: 5.15rem;
+  left: calc(calc(var(--tile-size) / 2) + calc(var(--buttons-column-spacing) / 2));
   z-index: 5;
 }
 
 #restart{
   position: relative;
-  left: -5.15rem;
+  left: calc(calc(calc(var(--tile-size) * -1) / 2) - calc(var(--buttons-column-spacing) / 2));
   z-index: 3;
+  opacity: 0;
 }
 
 #restart.active {
   left: 0;
+  opacity: 1;
 }
 
 #change-names.active {
@@ -45,7 +51,8 @@
   animation: endAnimationGameboard 2s forwards;
 }
 
-.game-tile:empty:active {
+.game-tile:empty:active,
+.game-tile.click {
   scale: 1.05;
 }
 
@@ -78,6 +85,19 @@
   animation: endAnimationTurn 0.8s forwards 1.2s;
 }
 
+.turn.end.restart{
+  animation: restartAnimationTurn 0.8s forwards;
+}
+
+@keyframes restartAnimationTurn {
+  0% {
+    transform: translateY(1.5rem);
+  }
+
+  100% {
+    transform: translateY(-1.5rem);
+  }
+}
 
 @keyframes endAnimationTurn {
   0% {
@@ -107,44 +127,92 @@
   }
 }
 
-.p1-mark.swap {
-  animation: p1Swap 0.8s forwards;
+.result.end.restart {
+  animation: restartAnimationResult 0.8s forwards;
+}
+
+@keyframes restartAnimationResult {
+  0% {
+    transform: translateY(-2rem);
+  }
+
+  100% {
+    transform: translateY(-5rem);
+  }
+}
+.p1-mark {
   z-index: 2;
+  transform: translateX( calc( calc( calc( var(--tile-size) / 1.5) - calc( var(--tile-size) / 12)) - calc(calc( 13rem + 0.5rem) / 2)));
+}
+.p2-mark {
+  z-index: 2;
+  transform: translateX( calc( calc( calc( var(--tile-size) / -1.5) - calc( var(--tile-size) / -12)) + calc(calc( 13rem + 0.5rem) / 2)));
+}
+
+.p1-mark.swap {
+  animation: p1Swap 0.6s forwards;
 }
 
 .p2-mark.swap {
-  animation: p2Swap 0.8s forwards;
-  z-index: 2;
+  animation: p2Swap 0.6s forwards;
 }
 
 @keyframes p1Swap {
   0% {
-    transform: translateX(0);
-  }
+  transform: translateX( calc( calc( calc( var(--tile-size) / 1.5) - calc( var(--tile-size) / 12)) - calc(calc( 13rem + 0.5rem) / 2)));
+}
 
   50% {
-    transform: translateX(75px);
+    transform: translateX(calc( calc(var(--tile-size) / 1.5) - calc(var(--tile-size) / 12)));
   }
 
   100% {
-    transform: translateX(0);
+    transform: translateX( calc( calc( calc( var(--tile-size) / 1.5) - calc( var(--tile-size) / 12)) - calc(calc( 13rem + 0.5rem) / 2)));
   }
 }
 
 @keyframes p2Swap {
   0% {
-    transform: translateX(0);
-  }
+  transform: translateX( calc( calc( calc( var(--tile-size) / -1.5) - calc( var(--tile-size) / -12)) + calc(calc( 13rem + 0.5rem) / 2)));
+}
 
   50% {
-    transform: translateX(-75px);
+    transform: translateX(calc( calc(var(--tile-size) / -1.5) - calc(var(--tile-size) / -12)));
   }
 
   100% {
-    transform: translateX(0);
+    transform: translateX( calc( calc( calc( var(--tile-size) / -1.5) - calc( var(--tile-size) / -12)) + calc(calc( 13rem + 0.5rem) / 2)));
   }
 }
 
+.buttons.end {
+  animation: endAnimationButtons 0.8s forwards 1.1s;
+}
+
+@keyframes endAnimationButtons {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(1.5rem);
+  }
+}
+
+
+.buttons.end.restart {
+  animation: restartAnimationButtons 0.8s forwards 0.1s;
+  transform: translateY(1.5rem);
+}
+@keyframes restartAnimationButtons {
+  0% {
+    transform: translateY(1.5rem);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
 
 .gameboard-container.restart {
   animation: restartAnimationGameboard 1s forwards;
@@ -165,7 +233,7 @@
 }
 
 .gameboard-container.restart.end {
-  animation: restartEndAnimationGameboard 2s forwards;
+  animation: restartEndAnimationGameboard 1s forwards;
 }
 
 @keyframes restartEndAnimationGameboard {
@@ -174,14 +242,8 @@
     transform: translateY(-3rem);
   }
 
-  40% {
+  80% {
     scale: 0.95;
-    transform: translateY(-3rem);
-  }
-
-  60% {
-    scale: 1;
-    transform: translateY(-3rem);
   }
 
   100% {

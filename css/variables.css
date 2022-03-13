@@ -7,4 +7,6 @@
   --gameboard-background-color: white;
   --tile-background-color: rgb(237, 237, 237);
   --tile-background-color-hover: rgb(225, 225, 225);
+
+  --small-brush-stroke-overlay: rgba(255, 255, 255, 0.19);
 }

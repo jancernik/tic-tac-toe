@@ -1,6 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap");
-@import "./variables.css";
+
+:root {
+  --tile-size: 6rem;
+  --gameboard-spacing: 1rem;
+  --tile-border-radius: 0.8rem;
+  --tile-font-size: 4rem;
+  --initial-screen-row-spacing: 1.5rem;
+  --initial-screen-column-spacing: 0.5rem;
+  --buttons-column-spacing: 1.2rem;
+  --player-width: 13rem;
+  --input-width: 11rem;
+  --button-shadow-size: 0.2rem;
+
+  --outset-shadow-color: rgb(100, 100, 100);
+  --inset-shadow-color: rgb(160, 160, 160);
+  --primary-font-color: rgb(50, 50, 50);
+  --secondary-font-color: rgb(80, 80, 80);
+  --tile-background-color: rgb(237, 237, 237);
+  --tile-background-hover-color: rgb(225, 225, 225);
+  --big-brush-stroke-overlay: rgba(255, 255, 255, 0.86);
+  --small-brush-stroke-overlay: rgba(255, 255, 255, 0.19);
+}
 
 * {
   box-sizing: border-box;
@@ -9,44 +30,50 @@
 }
 
 body {
+  font-family: "Lato", sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  font-family: "Lato", sans-serif;
+}
+
+svg {
+  height: 2.5rem;
+  width: 2.5rem;
+  fill: var(--primary-font-color);
 }
 
 .initial-screen {
+  position: fixed;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: fixed;
   width: 100vw;
   height: 100vh;
-  background: white;
-  gap: 20px;
-  z-index: 40;
+  gap: 2rem;
   pointer-events: all;
+  background: #fff;
+  z-index: 40;
 }
 
 .title {
+  font-family: "Permanent Marker", cursive;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Permanent Marker", cursive;
   font-size: 4rem;
-  color: rgb(50, 50, 50);
+  color: var(--primary-font-color);
   font-weight: 900;
+  width: 50rem;
+  height: 7rem;
   background: linear-gradient(
-      rgba(255, 255, 255, 0.86),
-      rgba(255, 255, 255, 0.86)
+      var(--big-brush-stroke-overlay),
+      var(--big-brush-stroke-overlay)
     ),
     url(/svg/title-brush-stroke.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 57%;
-  width: 50rem;
-  height: 7rem;
 }
 
 form,
@@ -56,16 +83,19 @@ form > div {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  row-gap: var(--initial-screen-row-spacing);
+  column-gap: var(--initial-screen-column-spacing);
 }
 
 input {
   border: none;
-  border-radius: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.07);
-  width: 13rem;
-  height: 2.5rem;
+  border-radius: t;
+  background-color: var(--tile-background-color);
+  width: var(--input-width);
+  height: calc(var(--tile-size) / 2.5);
+  border-radius: calc(var(--tile-border-radius) / 2.5);
   padding: 1rem;
+  font-size: 1rem;
 }
 
 form > div {
@@ -75,90 +105,109 @@ form > div {
 .marks {
   display: flex;
   flex-direction: row;
-  gap: 30px;
+  gap: 0;
+  width: 100%;
+}
+
+#swap-marks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-font-color);
+  width: calc(var(--tile-size) / 1.5);
+  height: calc(var(--tile-size) / 2);
+  border-radius: calc(var(--tile-border-radius) / 2);
+  background: var(--tile-background-color);
+  z-index: 15;
 }
 
 .p1-mark,
 .p2-mark {
-  color: rgb(50, 50, 50);
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: calc(var(--tile-size) / 2);
-  height: calc(var(--tile-size) / 2);
-  border: calc(var(--tile-border) / 2);
-  border-radius: calc(var(--tile-border-radius) / 2);
-  user-select: none;
-  background: var(--tile-background-color);
   font-family: "Permanent Marker", cursive;
-}
-
-#swap-marks {
-  width: 2.5rem;
-  font-size: 1.2rem;
-  height: 2.5rem;
-  color: rgb(50, 50, 50);
-  font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--primary-font-color);
+  font-size: calc(var(--tile-font-size) / 2);
   width: calc(var(--tile-size) / 2);
   height: calc(var(--tile-size) / 2);
-  border: calc(var(--tile-border) / 2);
   border-radius: calc(var(--tile-border-radius) / 2);
-  user-select: none;
   background: var(--tile-background-color);
-  font-weight: 900;
+  user-select: none;
   z-index: 5;
 }
 
-.player {
-  font-size: 2rem;
-  font-family: "Permanent Marker", cursive;
-}
 .player > p {
-  font-weight: 900;
+  font-family: "Lato", sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: rgb(237, 237, 237);
+  font-weight: 900;
   font-size: 1.5rem;
   height: 3.5rem;
-  font-family: "Lato", sans-serif;
   background: linear-gradient(
-      rgba(255, 255, 255, 0.19),
-      rgba(255, 255, 255, 0.19)
+      var(--small-brush-stroke-overlay),
+      var(--small-brush-stroke-overlay)
     ),
     url(/svg/player-brush-stroke.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 105%;
-  width: 100%;
+  color: var(--tile-background-color);
+  width: var(--player-width);
 }
 
 button {
-  width: 10rem;
-  font-size: 1.2rem;
-  height: 2.5rem;
+  transform: translateX(calc( var(--button-shadow-size) * -1)) translateY(calc( var(--button-shadow-size) * -1));
+  border-radius: calc(var(--tile-border-radius) / 2);
+  border: none;
+  color: var(--primary-font-color);
+  box-shadow: var(--button-shadow-size) var(--button-shadow-size) 0 0 var(--outset-shadow-color);
+}
+
+button:active,
+button.click {
+  box-shadow: inset var(--button-shadow-size) var(--button-shadow-size) 0 0 var(--inset-shadow-color);
+  transform: translateX(0) translateY(0);
+}
+
+button {
+  width: calc(var(--tile-size) * 1.5);
+  font-size: 1.15rem;
+  height: calc(var(--tile-size) / 2);
+  font-weight: 900;
+}
+
+.buttons {
+  display: flex;
+  position: relative;
+  top: 1.5rem;
+  column-gap: var(--buttons-column-spacing);
+}
+.buttons button {
+  width: var(--tile-size);
+  font-size: 1rem;
+  height: calc(var(--tile-size) / 2.5);
 }
 
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
 }
 
 .gameboard-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  background: var(--gameboard-background-color);
+  background: #fff;
   gap: var(--gameboard-spacing);
   padding: var(--gameboard-spacing);
-  border: var(--gameboard-border-radius);
-  border-radius: calc(var(--tile-border-radius) + var(--gameboard-spacing));
+  pointer-events: all;
   z-index: 30;
+}
+
+.gameboard-container.end {
+  pointer-events: none;
 }
 
 header,
@@ -167,18 +216,14 @@ footer {
   display: flex;
   justify-content: center;
   font-size: 1.3rem;
-  color: rgb(50, 50, 50);
-}
-
-.turn {
-  align-items: flex-end;
+  color: var(--primary-font-color);
 }
 
 header {
   align-items: flex-end;
 }
 
-footer{
+footer {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
@@ -187,35 +232,35 @@ footer{
 .result {
   gap: 0.4rem;
   text-align: center;
+  position: absolute;
 }
 
 .p2-result {
   font-size: 1rem;
-  color: rgb(80, 80, 80);
+  color: var(--secondary-font-color);
 }
 
 .game-tile {
-  color: rgb(50, 50, 50);
   font-family: "Permanent Marker", cursive;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 4rem;
+  color: var(--primary-font-color);
+  font-size: var(--tile-font-size);
   width: var(--tile-size);
   height: var(--tile-size);
-  border: var(--tile-border);
   border-radius: var(--tile-border-radius);
-  user-select: none;
   background: var(--tile-background-color);
+  user-select: none;
 }
 
 .game-tile.restart {
-  color: rgb(237, 237, 237);
+  color: var(--tile-background-color);
 }
 
 .game-tile:empty:hover,
 input:hover,
 input:focus,
 #swap-marks:hover {
-  background: var(--tile-background-color-hover);
+  background: var(--tile-background-hover-color);
 }
