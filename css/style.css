@@ -70,7 +70,7 @@ svg {
       var(--big-brush-stroke-overlay),
       var(--big-brush-stroke-overlay)
     ),
-    url("/svg/title-brush-stroke.svg");
+    url(../svg/title-brush-stroke.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 57%;
@@ -149,7 +149,7 @@ form > div {
       var(--small-brush-stroke-overlay),
       var(--small-brush-stroke-overlay)
     ),
-    url("/svg/player-brush-stroke.svg");
+    url(../svg/player-brush-stroke.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 105%;
@@ -264,3 +264,5 @@ input:focus,
 #swap-marks:hover {
   background: var(--tile-background-hover-color);
 }
+
+
